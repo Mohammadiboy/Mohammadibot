@@ -17,90 +17,183 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// دکمه‌های رپلی کیبورد
-const mainMenu = Markup.keyboard([
-  ["📋 راهنما"], // دکمه راهنما
-])
-  .resize() // تغییر اندازه دکمه‌ها
-  .oneTime(); // نمایش فقط برای یکبار
+// ذخیره زبان کاربران
+const userLanguages = {};
 
-// پیام خوش‌آمدگویی و منوی اصلی
+// منوی زبان
+const languageMenu = Markup.keyboard([
+  ["فارسی", "English"], // انتخاب زبان
+])
+  .resize()
+  .oneTime();
+
+// منوی اصلی
+const mainMenu = (language) =>
+  Markup.keyboard(
+    language === "فارسی" ? [["📋 راهنما"]] : [["📋 Help"]]
+  )
+    .resize()
+    .oneTime();
+
+// انتخاب زبان هنگام استارت
 bot.start((ctx) => {
+  ctx.reply("لطفاً زبان خود را انتخاب کنید:\nPlease select your language:", languageMenu);
+});
+
+// تنظیم زبان
+bot.hears(["فارسی", "English"], (ctx) => {
+  const language = ctx.message.text;
+  userLanguages[ctx.from.id] = language;
+
+  const welcomeMessage =
+    language === "فارسی"
+      ? `
+❤️ سلام به ربات User ID 👤 خوش آمدید 
+┈┅┅━┃🤍┃━┅┅┈
+👤 برای دریافت اطلاعات خود از منوی زیر استفاده کنید.
+      `
+      : `
+❤️ Welcome to the User ID Bot 👤 
+┈┅┅━┃🤍┃━┅┅┈
+👤 Use the menu below to get your information.
+      `;
+
+  ctx.reply(welcomeMessage, mainMenu(language));
+});
+
+// دستور /info
+bot.command("info", (ctx) => {
   const user = ctx.from;
   const username = user.username ? `@${user.username}` : "ناموجود";
   const userId = user.id;
-  const language = user.language_code || "نامشخص";
+  const userLanguage = user.language_code || "نامشخص";
 
-  const message = `
-❤️ سلام به ربات User ID 👤 خوش آمدید 
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const userInfo =
+    language === "فارسی"
+      ? `
+❤️ اطلاعات اکانت شما:
 ┈┅┅━┃🤍┃━┅┅┈
-👤 اطلاعات اکانت شما به شرح زیر میباشد:
-
 ⛓ یوزر نیم: ${username}
-🪪 آیدی عددی اکانت شما: ${userId}
-🏷 زبان اکانت شما: ${language}
+🪪 آیدی عددی: ${userId}
+🏷 زبان اکانت: ${userLanguage}
 ┈┅┅━┃🤍┃━┅┅┈
 📢 @MahdyBots
 👤 @SeniorMehdy
-  `;
-  ctx.reply(message, mainMenu);
+      `
+      : `
+❤️ Your Account Information:
+┈┅┅━┃🤍┃━┅┅┈
+⛓ Username: ${username}
+🪪 User ID: ${userId}
+🏷 Language: ${userLanguage}
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `;
+
+  ctx.reply(userInfo);
 });
 
-// پاسخ به دکمه "📋 راهنما"
-bot.hears("📋 راهنما", (ctx) => {
-  const helpMessage = `
-❤️ به بخش راهنما خوش آمدید!
-┈┅┅━┃🤍┃━┅┅┈
-1️⃣ - برای دریافت اطلاعات خود روی /start کلیک کنید
-2️⃣ - برای دریافت اطلاعات کانال یک پیام از کانال فوروارد کنید
-3️⃣ - برای دریافت اطلاعات شخص یک پیام از شخص فوروارد کنید
+// دستور جدید /about
+bot.command("about", (ctx) => {
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const aboutMessage =
+    language === "فارسی"
+      ? `
+❤️ درباره ربات:
+این ربات برای دریافت اطلاعات کاربر و پیام‌های فوروارد شده طراحی شده است.
 ┈┅┅━┃🤍┃━┅┅┈
 📢 @MahdyBots
 👤 @SeniorMehdy
-  `;
-  ctx.reply(helpMessage, mainMenu);
+      `
+      : `
+❤️ About the Bot:
+This bot is designed to retrieve user information and forwarded message details.
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `;
+
+  ctx.reply(aboutMessage);
+});
+
+// پاسخ به دکمه "📋 راهنما" یا "📋 Help"
+bot.hears(["📋 راهنما", "📋 Help"], (ctx) => {
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const helpMessage =
+    language === "فارسی"
+      ? `
+❤️ به بخش راهنما خوش آمدید!
+┈┅┅━┃🤍┃━┅┅┈
+1️⃣ - برای دریافت اطلاعات خود روی /info کلیک کنید.
+2️⃣ - برای دریافت اطلاعات کانال یک پیام از کانال فوروارد کنید.
+3️⃣ - برای دریافت اطلاعات شخص یک پیام از شخص فوروارد کنید.
+4️⃣ - برای مشاهده درباره ربات از دستور /about استفاده کنید.
+      `
+      : `
+❤️ Welcome to the Help Section!
+┈┅┅━┃🤍┃━┅┅┈
+1️⃣ - Click /info to get your account information.
+2️⃣ - Forward a message from a channel to get its details.
+3️⃣ - Forward a message from a person to get their details.
+4️⃣ - Use /about to see information about the bot.
+      `;
+
+  ctx.reply(helpMessage, mainMenu(language));
 });
 
 // دریافت اطلاعات پیام فوروارد شده
 bot.on("message", (ctx) => {
   const forwardedFrom = ctx.message.forward_from || ctx.message.forward_from_chat;
+  const language = userLanguages[ctx.from.id] || "فارسی";
 
   if (!forwardedFrom) {
-    ctx.reply("❌ لطفاً یک پیام فوروارد شده ارسال کنید.");
+    ctx.reply(language === "فارسی" ? "❌ لطفاً یک پیام فوروارد شده ارسال کنید." : "❌ Please forward a message.");
     return;
   }
 
-  const isChannel = forwardedFrom.type === "channel";
-  const isUser = forwardedFrom.type === "private";
-
-  if (isChannel) {
-    // اطلاعات کانال
-    const channelInfo = `
-📈 اطلاعات پیام فورواردی شما  
-┈┅┅━┃🤍┃━┅┅┈
-⛓ یوزر نیم کانال: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
-🪪 آیدی عددی کانال: ${forwardedFrom.id}
-🏷 اسم کانال: ${forwardedFrom.title || "ناموجود"}
-┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
-    `;
-    ctx.reply(channelInfo, mainMenu);
-  } else if (isUser) {
-    // اطلاعات شخص
-    const userInfo = `
+  if (forwardedFrom.type === "private") {
+    const userInfo =
+      language === "فارسی"
+        ? `
 📈 اطلاعات پیام فورواردی شما  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ یوزر نیم شخص: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
 🪪 آیدی عددی شخص: ${forwardedFrom.id}
 🏷 اسم شخص: ${forwardedFrom.first_name || "ناموجود"} ${forwardedFrom.last_name || ""}
+        `
+        : `
+📈 Forwarded Message Information  
 ┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
-    `;
-    ctx.reply(userInfo, mainMenu);
+⛓ Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
+🪪 User ID: ${forwardedFrom.id}
+🏷 Name: ${forwardedFrom.first_name || "Not available"} ${forwardedFrom.last_name || ""}
+        `;
+    ctx.reply(userInfo);
+  } else if (forwardedFrom.type === "channel") {
+    const channelInfo =
+      language === "فارسی"
+        ? `
+📈 اطلاعات پیام فورواردی شما  
+┈┅┅━┃🤍┃━┅┅┈
+⛓ یوزر نیم کانال: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
+🪪 آیدی عددی کانال: ${forwardedFrom.id}
+🏷 اسم کانال: ${forwardedFrom.title || "ناموجود"}
+        `
+        : `
+📈 Forwarded Message Information  
+┈┅┅━┃🤍┃━┅┅┈
+⛓ Channel Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
+🪪 Channel ID: ${forwardedFrom.id}
+🏷 Channel Name: ${forwardedFrom.title || "Not available"}
+        `;
+    ctx.reply(channelInfo);
   } else {
-    ctx.reply("❌ پیام فوروارد شده از کانال یا شخص نیست.", mainMenu);
+    ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }
 });
 

@@ -17,9 +17,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-// ذخیره زبان کاربران و لیست مدیران
+// ذخیره زبان کاربران
 const userLanguages = {};
-const admins = [7712384524]; // آیدی مدیران
 
 // منوی زبان
 const languageMenu = Markup.keyboard([
@@ -31,9 +30,7 @@ const languageMenu = Markup.keyboard([
 // منوی اصلی
 const mainMenu = (language) =>
   Markup.keyboard(
-    language === "فارسی"
-      ? [["📋 راهنما", "🆘 پشتیبانی"]]
-      : [["📋 Help", "🆘 Support"]]
+    language === "فارسی" ? [["📋 راهنما"]] : [["📋 Help"]]
   )
     .resize()
     .oneTime();
@@ -64,113 +61,139 @@ bot.hears(["فارسی", "English"], (ctx) => {
   ctx.reply(welcomeMessage, mainMenu(language));
 });
 
-// مدیریت پیام‌های فوروارد شده
+// دستور /info
+bot.command("info", (ctx) => {
+  const user = ctx.from;
+  const username = user.username ? `@${user.username}` : "ناموجود";
+  const userId = user.id;
+  const userLanguage = user.language_code || "نامشخص";
+
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const userInfo =
+    language === "فارسی"
+      ? `
+❤️ اطلاعات اکانت شما:
+┈┅┅━┃🤍┃━┅┅┈
+⛓ یوزر نیم: `${username}`
+🪪 آیدی عددی: `${userId}`
+🏷 زبان اکانت: `${userLanguage}`
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `
+      : `
+❤️ Your Account Information:
+┈┅┅━┃🤍┃━┅┅┈
+⛓ Username: `${username}`
+🪪 User ID: `${userId}`
+🏷 Language: `${userLanguage}`
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `;
+
+  ctx.reply(userInfo);
+});
+
+// دستور جدید /about
+bot.command("about", (ctx) => {
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const aboutMessage =
+    language === "فارسی"
+      ? `
+❤️ درباره ربات:
+این ربات برای دریافت اطلاعات کاربر و پیام‌های فوروارد شده طراحی شده است.
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `
+      : `
+❤️ About the Bot:
+This bot is designed to retrieve user information and forwarded message details.
+┈┅┅━┃🤍┃━┅┅┈
+📢 @MahdyBots
+👤 @SeniorMehdy
+      `;
+
+  ctx.reply(aboutMessage);
+});
+
+// پاسخ به دکمه "📋 راهنما" یا "📋 Help"
+bot.hears(["📋 راهنما", "📋 Help"], (ctx) => {
+  const language = userLanguages[ctx.from.id] || "فارسی";
+
+  const helpMessage =
+    language === "فارسی"
+      ? `
+❤️ به بخش راهنما خوش آمدید!
+┈┅┅━┃🤍┃━┅┅┈
+1️⃣ - برای دریافت اطلاعات خود روی /info کلیک کنید.
+2️⃣ - برای دریافت اطلاعات کانال یک پیام از کانال فوروارد کنید.
+3️⃣ - برای دریافت اطلاعات شخص یک پیام از شخص فوروارد کنید.
+4️⃣ - برای مشاهده درباره ربات از دستور /about استفاده کنید.
+      `
+      : `
+❤️ Welcome to the Help Section!
+┈┅┅━┃🤍┃━┅┅┈
+1️⃣ - Click /info to get your account information.
+2️⃣ - Forward a message from a channel to get its details.
+3️⃣ - Forward a message from a person to get their details.
+4️⃣ - Use /about to see information about the bot.
+      `;
+
+  ctx.reply(helpMessage, mainMenu(language));
+});
+
+// دریافت اطلاعات پیام فوروارد شده
 bot.on("message", (ctx) => {
   const forwardedFrom = ctx.message.forward_from || ctx.message.forward_from_chat;
   const language = userLanguages[ctx.from.id] || "فارسی";
 
-  // اگر پیام فوروارد شده باشد
-  if (forwardedFrom) {
-    if (forwardedFrom.type === "private") {
-      const userInfo =
-        language === "فارسی"
-          ? `
-📈 اطلاعات پیام فورواردی شما:
+  if (!forwardedFrom) {
+    ctx.reply(language === "فارسی" ? "❌ لطفاً یک پیام فوروارد شده ارسال کنید." : "❌ Please forward a message.");
+    return;
+  }
+
+  if (forwardedFrom.type === "private") {
+    const userInfo =
+      language === "فارسی"
+        ? `
+📈 اطلاعات پیام فورواردی شما  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ یوزر نیم شخص: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
 🪪 آیدی عددی شخص: ${forwardedFrom.id}
 🏷 اسم شخص: ${forwardedFrom.first_name || "ناموجود"} ${forwardedFrom.last_name || ""}
-          `
-          : `
-📈 Forwarded Message Information:
+        `
+        : `
+📈 Forwarded Message Information  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
 🪪 User ID: ${forwardedFrom.id}
 🏷 Name: ${forwardedFrom.first_name || "Not available"} ${forwardedFrom.last_name || ""}
-          `;
-      ctx.reply(userInfo, Markup.inlineKeyboard([
-        Markup.button.callback("کپی آیدی عددی", `copy_${forwardedFrom.id}`),
-        Markup.button.callback("کپی یوزر نیم", `copy_${forwardedFrom.username || "ناموجود"}`),
-      ]));
-    } else if (forwardedFrom.type === "channel") {
-      const channelInfo =
-        language === "فارسی"
-          ? `
-📈 اطلاعات پیام فورواردی شما:
+        `;
+    ctx.reply(userInfo);
+  } else if (forwardedFrom.type === "channel") {
+    const channelInfo =
+      language === "فارسی"
+        ? `
+📈 اطلاعات پیام فورواردی شما  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ یوزر نیم کانال: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
 🪪 آیدی عددی کانال: ${forwardedFrom.id}
 🏷 اسم کانال: ${forwardedFrom.title || "ناموجود"}
-          `
-          : `
-📈 Forwarded Message Information:
+        `
+        : `
+📈 Forwarded Message Information  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ Channel Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
 🪪 Channel ID: ${forwardedFrom.id}
 🏷 Channel Name: ${forwardedFrom.title || "Not available"}
-          `;
-      ctx.reply(channelInfo, Markup.inlineKeyboard([
-        Markup.button.callback("کپی آیدی عددی", `copy_${forwardedFrom.id}`),
-        Markup.button.callback("کپی یوزر نیم", `copy_${forwardedFrom.username || "ناموجود"}`),
-      ]));
-    }
-  } else {
-    // اگر پیام فوروارد نشده باشد (یعنی پیام از خود شخص باشد)
-    const userInfo =
-      language === "فارسی"
-        ? `
-📈 اطلاعات پیام شما:
-┈┅┅━┃🤍┃━┅┅┈
-⛓ یوزر نیم شما: ${ctx.from.username ? `@${ctx.from.username}` : "ناموجود"}
-🪪 آیدی عددی شما: ${ctx.from.id}
-🏷 اسم شما: ${ctx.from.first_name || "ناموجود"} ${ctx.from.last_name || ""}
-        `
-        : `
-📈 Your Message Information:
-┈┅┅━┃🤍┃━┅┅┈
-⛓ Your Username: ${ctx.from.username ? `@${ctx.from.username}` : "Not available"}
-🪪 Your User ID: ${ctx.from.id}
-🏷 Your Name: ${ctx.from.first_name || "Not available"} ${ctx.from.last_name || ""}
         `;
-    ctx.reply(userInfo, Markup.inlineKeyboard([
-      Markup.button.callback("کپی آیدی عددی", `copy_${ctx.from.id}`),
-      Markup.button.callback("کپی یوزر نیم", `copy_${ctx.from.username || "ناموجود"}`),
-    ]));
-  }
-});
-
-// مدیریت کلیک روی دکمه‌های کپی
-bot.action(/copy_(.+)/, (ctx) => {
-  const data = ctx.match[1];
-  ctx.reply(`کپی شد: ${data}`);
-});
-
-// پشتیبانی
-bot.hears("🆘 پشتیبانی", (ctx) => {
-  const language = userLanguages[ctx.from.id] || "فارسی";
-  const supportMessage =
-    language === "فارسی"
-      ? "لطفاً پیام خود را برای پشتیبانی ارسال کنید."
-      : "Please send your message for support.";
-  ctx.reply(supportMessage);
-});
-
-// ارسال پیام به مدیر
-bot.on("message", (ctx) => {
-  if (ctx.message.text && ctx.from.id !== 7712384524) {
-    // اگر پیام از کاربر باشد، ارسال به مدیر
-    admins.forEach((adminId) => {
-      bot.telegram.sendMessage(adminId, `پیام جدید از کاربر ${ctx.from.first_name} (${ctx.from.id}):\n\n${ctx.message.text}`);
-    });
-  }
-});
-
-// پاسخ به پیام از مدیر
-bot.on("text", (ctx) => {
-  if (admins.includes(ctx.from.id)) {
-    // اگر پیام از مدیر باشد، ارسال به کاربر
-    const userId = ctx.message.reply_to_message.from.id;
-    bot.telegram.sendMessage(userId, `پاسخ مدیر:\n\n${ctx.message.text}`);
+    ctx.reply(channelInfo);
+  } else {
+    ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }
 });
 
@@ -182,3 +205,4 @@ bot.launch().then(() => {
 // مدیریت خطاها
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
+ 

@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require("telegraf");
 const express = require("express");
 
 // توکن ربات خود را اینجا قرار دهید
-const BOT_TOKEN = "7866951691:AAFGDIrDOwQfR070gtbntjVJT7Y9oZOk1fg";
+const BOT_TOKEN = "7866951691:AAFc3NTUfEBj8tjkunap_-iXjfoc1iO1Hj0";
 const bot = new Telegraf(BOT_TOKEN);
 
 // سرور Express.js برای آنلاین نگه داشتن ربات
@@ -75,9 +75,9 @@ bot.command("info", (ctx) => {
       ? `
 ❤️ اطلاعات اکانت شما:
 ┈┅┅━┃🤍┃━┅┅┈
-⛓ یوزر نیم: `${username}`
-🪪 آیدی عددی: `${userId}`
-🏷 زبان اکانت: `${userLanguage}`
+⛓ یوزر نیم: ${username}
+🪪 آیدی عددی: ${userId}
+🏷 زبان اکانت: ${userLanguage}
 ┈┅┅━┃🤍┃━┅┅┈
 📢 @MahdyBots
 👤 @SeniorMehdy
@@ -85,9 +85,9 @@ bot.command("info", (ctx) => {
       : `
 ❤️ Your Account Information:
 ┈┅┅━┃🤍┃━┅┅┈
-⛓ Username: `${username}`
-🪪 User ID: `${userId}`
-🏷 Language: `${userLanguage}`
+⛓ Username: ${username}
+🪪 User ID: ${userId}
+🏷 Language: ${userLanguage}
 ┈┅┅━┃🤍┃━┅┅┈
 📢 @MahdyBots
 👤 @SeniorMehdy
@@ -174,6 +174,10 @@ bot.on("message", (ctx) => {
 🏷 Name: ${forwardedFrom.first_name || "Not available"} ${forwardedFrom.last_name || ""}
         `;
     ctx.reply(userInfo);
+
+    // قابلیت کپی اطلاعات شخص
+    ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
+    ctx.reply(`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}`);
   } else if (forwardedFrom.type === "channel") {
     const channelInfo =
       language === "فارسی"
@@ -192,6 +196,10 @@ bot.on("message", (ctx) => {
 🏷 Channel Name: ${forwardedFrom.title || "Not available"}
         `;
     ctx.reply(channelInfo);
+
+    // قابلیت کپی اطلاعات کانال
+    ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
+    ctx.reply(`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}`);
   } else {
     ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }
@@ -205,4 +213,3 @@ bot.launch().then(() => {
 // مدیریت خطاها
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
- 

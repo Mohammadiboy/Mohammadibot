@@ -106,7 +106,7 @@ bot.command("about", (ctx) => {
 
   const aboutMessage =
     language === "فارسی"
-      `;
+      ? `
 ❤️ درباره ربات:
 این ربات برای دریافت اطلاعات کاربر و پیام‌های فوروارد شده طراحی شده است.
 ┈┅┅━┃🤍┃━┅┅┈
@@ -181,7 +181,8 @@ bot.on("message", (ctx) => {
 📢 @MohammadiBots
 👤 @AqaiMohammadi
         `;
-        ? `
+  } else if (forwardedFrom.type === "channel") {
+    ctx.reply(language === "فارسی" ? `
 📈 اطلاعات پیام فورواردی شما  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ یوزر نیم کانال: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
@@ -189,8 +190,7 @@ bot.on("message", (ctx) => {
 🏷 اسم کانال: ${forwardedFrom.title || "ناموجود"}
 📢 @MohammadiBots
 👤 @AqaiMohammadi
-        `
-        : `
+    ` : `
 📈 Forwarded Message Information  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ Channel Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
@@ -198,7 +198,7 @@ bot.on("message", (ctx) => {
 🏷 Channel Name: ${forwardedFrom.title || "Not available"}
 📢 @MohammadiBots
 👤 @AqaiMohammadi
-        `;
+    `);
   } else {
     ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }

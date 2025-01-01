@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require("telegraf");
 const express = require("express");
 
 // توکن ربات خود را اینجا قرار دهید
-const BOT_TOKEN = "7866951691:AAFc3NTUfEBj8tjkunap_-iXjfoc1iO1Hj0";
+const BOT_TOKEN = "7580908338:AAFKY9YkpPab4dPwpmwUhuyKSEQBMneWpxI";
 const bot = new Telegraf(BOT_TOKEN);
 
 // سرور Express.js برای آنلاین نگه داشتن ربات

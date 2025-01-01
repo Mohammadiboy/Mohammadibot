@@ -177,7 +177,7 @@ bot.on("message", (ctx) => {
 
     // قابلیت کپی اطلاعات شخص
     ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
-    ctx.reply(`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}`);
+    ctx.reply(`\`\`\`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}\`\`\``);
   } else if (forwardedFrom.type === "channel") {
     const channelInfo =
       language === "فارسی"
@@ -199,7 +199,7 @@ bot.on("message", (ctx) => {
 
     // قابلیت کپی اطلاعات کانال
     ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
-    ctx.reply(`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}`);
+    ctx.reply(`\`\`\`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}\`\`\``);
   } else {
     ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }

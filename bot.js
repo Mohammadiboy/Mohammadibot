@@ -51,11 +51,15 @@ bot.hears(["فارسی", "English"], (ctx) => {
 ❤️ سلام به ربات User ID 👤 خوش آمدید 
 ┈┅┅━┃🤍┃━┅┅┈
 👤 برای دریافت اطلاعات خود از منوی زیر استفاده کنید.
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `
       : `
 ❤️ Welcome to the User ID Bot 👤 
 ┈┅┅━┃🤍┃━┅┅┈
 👤 Use the menu below to get your information.
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `;
 
   ctx.reply(welcomeMessage, mainMenu(language));
@@ -79,8 +83,8 @@ bot.command("info", (ctx) => {
 🪪 آیدی عددی: ${userId}
 🏷 زبان اکانت: ${userLanguage}
 ┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `
       : `
 ❤️ Your Account Information:
@@ -89,8 +93,8 @@ bot.command("info", (ctx) => {
 🪪 User ID: ${userId}
 🏷 Language: ${userLanguage}
 ┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `;
 
   ctx.reply(userInfo);
@@ -106,15 +110,15 @@ bot.command("about", (ctx) => {
 ❤️ درباره ربات:
 این ربات برای دریافت اطلاعات کاربر و پیام‌های فوروارد شده طراحی شده است.
 ┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `
       : `
 ❤️ About the Bot:
 This bot is designed to retrieve user information and forwarded message details.
 ┈┅┅━┃🤍┃━┅┅┈
-📢 @MahdyBots
-👤 @SeniorMehdy
+📢 @MohammadiBots
+👤 @AqaiMohammadi
       `;
 
   ctx.reply(aboutMessage);
@@ -165,6 +169,8 @@ bot.on("message", (ctx) => {
 ⛓ یوزر نیم شخص: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
 🪪 آیدی عددی شخص: ${forwardedFrom.id}
 🏷 اسم شخص: ${forwardedFrom.first_name || "ناموجود"} ${forwardedFrom.last_name || ""}
+📢 @MohammadiBots
+👤 @AqaiMohammadi
         `
         : `
 📈 Forwarded Message Information  
@@ -172,21 +178,17 @@ bot.on("message", (ctx) => {
 ⛓ Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
 🪪 User ID: ${forwardedFrom.id}
 🏷 Name: ${forwardedFrom.first_name || "Not available"} ${forwardedFrom.last_name || ""}
+📢 @MohammadiBots
+👤 @AqaiMohammadi
         `;
-    ctx.reply(userInfo);
-
-    // قابلیت کپی اطلاعات شخص
-    ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
-    ctx.reply(`\`\`\`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}\`\`\``);
-  } else if (forwardedFrom.type === "channel") {
-    const channelInfo =
-      language === "فارسی"
         ? `
 📈 اطلاعات پیام فورواردی شما  
 ┈┅┅━┃🤍┃━┅┅┈
 ⛓ یوزر نیم کانال: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "ناموجود"}
 🪪 آیدی عددی کانال: ${forwardedFrom.id}
 🏷 اسم کانال: ${forwardedFrom.title || "ناموجود"}
+📢 @MohammadiBots
+👤 @AqaiMohammadi
         `
         : `
 📈 Forwarded Message Information  
@@ -194,12 +196,9 @@ bot.on("message", (ctx) => {
 ⛓ Channel Username: ${forwardedFrom.username ? `@${forwardedFrom.username}` : "Not available"}
 🪪 Channel ID: ${forwardedFrom.id}
 🏷 Channel Name: ${forwardedFrom.title || "Not available"}
+📢 @MohammadiBots
+👤 @AqaiMohammadi
         `;
-    ctx.reply(channelInfo);
-
-    // قابلیت کپی اطلاعات کانال
-    ctx.reply(language === "فارسی" ? "اطلاعات برای کپی:" : "Information for copying:");
-    ctx.reply(`\`\`\`@${forwardedFrom.username || "ناموجود"} - ${forwardedFrom.id}\`\`\``);
   } else {
     ctx.reply(language === "فارسی" ? "❌ پیام فوروارد شده از کانال یا شخص نیست." : "❌ The forwarded message is not from a channel or person.");
   }
